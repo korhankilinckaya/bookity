@@ -9,4 +9,5 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ServiceController.class, loader = AnnotationConfigContextLoader.class)
 public class ServiceControllerTest {
+
 }

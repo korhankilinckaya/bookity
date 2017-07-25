@@ -100,6 +100,7 @@ public class ServiceController {
     public @ResponseBody
     Status buy(@RequestBody long userId, @RequestBody long bookId, @RequestBody long numberOfBooks){
         try {
+
             userService.buy(userId, bookId, numberOfBooks);
             return new Status(1,"user bought a book");
         } catch (Exception e) {
