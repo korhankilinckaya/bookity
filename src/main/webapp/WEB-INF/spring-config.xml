@@ -50,4 +50,6 @@
 
     <bean id="userDao" class="com.bookity.dao.UserDaoImpl"></bean>
     <bean id="userService" class="com.bookity.service.UserServiceImpl"></bean>
+
+    <bean id="paymentExt" class="com.bookity.external.PaymentServiceExternalImpl"></bean>
 </beans>

@@ -11,7 +11,7 @@ import javax.persistence.*;
                 joinColumns = @JoinColumn(name = "user_id")),
         @AssociationOverride(name = "pk.Book",
                 joinColumns = @JoinColumn(name = "book_id")) })
-public class SoldBooks implements java.io.Serializable {
+public class SoldBooks extends BaseEntity  implements java.io.Serializable {
 
     private SoldBooksId pk = new SoldBooksId();
 
@@ -21,6 +21,9 @@ public class SoldBooks implements java.io.Serializable {
 
     @Column(name = "numberOfBooks", nullable = false)
     private long numberOfBooks;
+
+    @Column(name = "paymentCompleted", nullable = true)
+    private long paymentCompleted;
 
     @EmbeddedId
     public SoldBooksId getPk() {
@@ -57,7 +60,6 @@ public class SoldBooks implements java.io.Serializable {
         this.createdDate = createdDate;
     }
 
-
     public long getNumberOfBooks() {
         return numberOfBooks;
     }
@@ -65,4 +67,13 @@ public class SoldBooks implements java.io.Serializable {
     public void setNumberOfBooks(long numberOfBooks) {
         this.numberOfBooks = numberOfBooks;
     }
+
+    public long getPaymentCompleted() {
+        return paymentCompleted;
+    }
+
+    public void setPaymentCompleted(long paymentCompleted) {
+        this.paymentCompleted = paymentCompleted;
+    }
+
 }

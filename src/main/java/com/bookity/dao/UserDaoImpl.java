@@ -1,16 +1,14 @@
 package com.bookity.dao;
 
-import com.bookity.model.Book;
-import com.bookity.model.SoldBooks;
+import com.bookity.dto.UserDTO;
 import com.bookity.model.User;
+import com.bookity.util.Util;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by korhan
@@ -24,54 +22,35 @@ public class UserDaoImpl implements UserDao {
     Transaction tx = null;
 
     @Override
-    public boolean register(User user) throws Exception{
+    public boolean register(UserDTO dto) throws Exception{
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
-        session.save(user);
+
+        session.save(Util.convertDTOtoEntity(dto));
         tx.commit();
         session.close();
         return false;
     }
 
     @Override
-    public boolean login(String email, String password) throws Exception{
+    public boolean login(UserDTO user) throws Exception{
         session = sessionFactory.openSession();
         tx = session.getTransaction();
         session.beginTransaction();
 
         Query query= session.
                 createQuery("from User where userEmail=:email and userPassword =:password");
-        query.setParameter("email", email);
-        query.setParameter("password", password);
-        User user = (User) query.list().get(0);
+        query.setParameter("email", user.getUserEmail());
+        query.setParameter("password", Util.convertToHash(user.getUserPassword()));
+
+        User userEntity = (User) query.list().get(0);
 
         if(user != null){
-            user.setLastRegistryDate(new Date());
+            userEntity.setLastRegistryDate(new Date());
         }
 
-        session.update(user);
+        session.update(userEntity);
         tx.commit();
-        return false;
-    }
-
-    @Override
-    public boolean buy(long userId, long bookId, long numberOfBooks) throws Exception{
-        session = sessionFactory.openSession();
-        tx = session.beginTransaction();
-
-        SoldBooks soldBooks = new SoldBooks();
-
-        Book book = (Book) session.load(Book.class, bookId);
-        User user = (User) session.load(User.class, userId);
-
-        soldBooks.setBook(book);
-        soldBooks.setUser(user);
-        soldBooks.setCreatedDate(new Date());
-        soldBooks.setNumberOfBooks(numberOfBooks);
-
-        session.save(soldBooks);
-        tx.commit();
-        session.close();
         return false;
     }
 

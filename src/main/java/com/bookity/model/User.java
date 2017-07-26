@@ -14,26 +14,26 @@ import java.util.Set;
 @Entity
 @Table(name="USER")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class User implements Serializable {
+public class User extends BaseEntity  implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue
     @Column(name="user_id")
-    public long id;
+    private long id;
 
-    @Column(name="userName")
-    public String userName;
+    @Column(name="userName", nullable = false, length = 20)
+    private String userName;
 
-    @Column(name="userEmail")
-    public String userEmail;
+    @Column(name="userEmail", nullable = false, length = 20)
+    private String userEmail;
 
-    @Column(name="userPassword")
-    public String userPassword;
+    @Column(name="userPassword", nullable = false, length = 255)
+    private String userPassword;
 
     @Column(name="lastRegistryDate")
-    public Date lastRegistryDate;
+    private Date lastRegistryDate;
 
     @ElementCollection(targetClass=SoldBooks.class)
     private Set<SoldBooks> soldBooks = new HashSet<SoldBooks>(0);

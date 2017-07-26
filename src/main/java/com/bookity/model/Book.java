@@ -15,29 +15,29 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Entity
 @Table(name="BOOK")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Book implements Serializable {
+public class Book extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name="book_id")
-    public long id;
+    private long id;
 
     @Column(name="bookName", nullable = false, length = 40)
-    public String bookName;
+    private String bookName;
 
     @Column(name="bookWriter", nullable = false, length = 40)
-    public String bookWriter;
+    private String bookWriter;
 
     @Column(name="ISBN", unique = true, nullable = false, length = 10)
-    public String ISBN;
+    private String ISBN;
 
     @Column(name="stock")
-    public long stock;
+    private long stock;
 
     @Column(name="category", nullable = false)
-    public long category;
+    private long category;
 
     @ElementCollection(targetClass=SoldBooks.class)
     private Set<SoldBooks> soldBooks = new HashSet<SoldBooks>(0);

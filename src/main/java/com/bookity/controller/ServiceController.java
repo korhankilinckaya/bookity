@@ -1,8 +1,9 @@
 package com.bookity.controller;
 
+import com.bookity.dto.BookDTO;
+import com.bookity.dto.UserDTO;
 import com.bookity.model.Book;
 import com.bookity.model.Status;
-import com.bookity.model.User;
 import com.bookity.service.BookService;
 import com.bookity.service.UserService;
 import org.apache.log4j.Logger;
@@ -23,9 +24,11 @@ public class ServiceController {
 
     static final Logger logger = Logger.getLogger(ServiceController.class);
 
+    //BOOK
+
     @RequestMapping(value = "/create", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    Status addBook(@RequestBody Book book){
+    Status addBook(@RequestBody BookDTO book){
         try{
             bookService.addBook(book);
             return new Status(1,"Book added");
@@ -48,23 +51,23 @@ public class ServiceController {
         return book;
     }
 
-    @RequestMapping(value="/list", method = RequestMethod.GET)
+    @RequestMapping(value="/list/{size}", method = RequestMethod.GET)
     public @ResponseBody
-    List<Book> getBookList() {
+    List<Book> getBookList(@PathVariable int size) {
         List<Book> bookList = null;
         try {
-            bookList = bookService.getBookList();
+            bookList = bookService.getBookList(size);
         } catch (Exception e) {
             logger.error(e);
         }
         return bookList;
     }
 
-    @RequestMapping(value="/delete/{id}", method = RequestMethod.GET)
+    @RequestMapping(value="/delete/{id}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    Status deleteBook(@PathVariable("id") long id){
+    Status deleteBook(@RequestBody BookDTO book){
         try {
-            bookService.deleteBook(id);
+            bookService.deleteBook(book);
             return new Status(1,"book deleted");
         } catch (Exception e) {
             logger.error(e);
@@ -72,9 +75,37 @@ public class ServiceController {
         }
     }
 
+    @RequestMapping(value="/update/{id}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    Status updateBook(@RequestBody BookDTO book){
+        try {
+            bookService.updateBook(book);
+            return new Status(1,"book deleted");
+        } catch (Exception e) {
+            logger.error(e);
+            return new Status(0,e.toString());
+        }
+    }
+
+    @RequestMapping(value = "/buy", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    Status buy(@RequestBody BookDTO book){
+        try {
+
+            bookService.buy(book);
+            return new Status(1,"user bought a book");
+        } catch (Exception e) {
+            logger.error(e);
+            return new Status(0,e.toString());
+        }
+    }
+
+
+    // USER
+
     @RequestMapping(value = "/register", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    Status register(@RequestBody User user){
+    Status register(@RequestBody UserDTO user){
         try {
             userService.register(user);
             return new Status(1,"user registered");
@@ -86,27 +117,13 @@ public class ServiceController {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    Status login(@RequestBody String email, String password){
+    Status login(@RequestBody UserDTO user){
         try {
-            userService.login(email, password);
+            userService.login(user);
             return new Status(1,"user logged in");
         } catch (Exception e) {
             logger.error(e);
             return new Status(0,e.toString());
         }
     }
-
-    @RequestMapping(value = "/buy/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody
-    Status buy(@RequestBody long userId, @RequestBody long bookId, @RequestBody long numberOfBooks){
-        try {
-
-            userService.buy(userId, bookId, numberOfBooks);
-            return new Status(1,"user bought a book");
-        } catch (Exception e) {
-            logger.error(e);
-            return new Status(0,e.toString());
-        }
-    }
-
 }

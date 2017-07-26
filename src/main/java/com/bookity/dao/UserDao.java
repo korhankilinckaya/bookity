@@ -1,5 +1,7 @@
 package com.bookity.dao;
 
+import com.bookity.dto.BookDTO;
+import com.bookity.dto.UserDTO;
 import com.bookity.model.Book;
 import com.bookity.model.User;
 
@@ -8,7 +10,6 @@ import com.bookity.model.User;
  */
 public interface UserDao {
 
-    public boolean register(User user) throws Exception;
-    public boolean login(String email, String password) throws Exception;
-    public boolean buy(long userId, long bookId, long numberOfBooks) throws Exception;
+    public boolean register(UserDTO user) throws Exception;
+    public boolean login(UserDTO user) throws Exception;
 }

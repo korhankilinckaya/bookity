@@ -1,5 +1,6 @@
 package com.bookity.dao;
 
+import com.bookity.dto.BookDTO;
 import com.bookity.model.Book;
 
 import java.util.List;
@@ -9,9 +10,11 @@ import java.util.List;
  */
 public interface BookDao {
 
-    public boolean addBook(Book book) throws Exception;
+    public boolean addBook(BookDTO book) throws Exception;
     public Book getBookById(long id) throws Exception;
-    public List<Book> getBookList() throws Exception;
-    public boolean deleteBook(long id) throws Exception;
-    public boolean updateBook(long id) throws Exception;
+    public List<Book> getBookList(int size) throws Exception;
+    public boolean deleteBook(BookDTO book) throws Exception;
+    public boolean updateBook(BookDTO book) throws Exception;
+    public Long[] buy(BookDTO book) throws Exception;
+    public boolean completePayment(Long[] id) throws Exception;
 }
