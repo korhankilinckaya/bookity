@@ -3,10 +3,13 @@ package com.bookity.controller;
 import com.bookity.dto.BookDTO;
 import com.bookity.dto.UserDTO;
 import com.bookity.model.Book;
+import com.bookity.model.SoldBooks;
 import com.bookity.model.Status;
+import com.bookity.model.User;
 import com.bookity.service.BookService;
 import com.bookity.service.UserService;
 import org.apache.log4j.Logger;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -26,7 +29,7 @@ public class ServiceController {
 
     //BOOK
 
-    @RequestMapping(value = "/create", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/createBook", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     Status addBook(@RequestBody BookDTO book){
         try{
@@ -34,11 +37,14 @@ public class ServiceController {
             return new Status(1,"Book added");
         } catch (Exception e) {
             logger.error(e);
+            if(e instanceof ObjectNotFoundException){
+                return new Status(0, "given ID not found");
+            }
             return new Status(0, e.toString());
         }
     }
 
-    @RequestMapping(value="/{id}", method = RequestMethod.GET)
+    @RequestMapping(value="/getBook/{id}", method = RequestMethod.GET)
     public @ResponseBody
     Book getBookById(@PathVariable("id") long id){
         Book book = null;
@@ -51,7 +57,7 @@ public class ServiceController {
         return book;
     }
 
-    @RequestMapping(value="/list/{size}", method = RequestMethod.GET)
+    @RequestMapping(value="/listBooks/size/{size}", method = RequestMethod.GET)
     public @ResponseBody
     List<Book> getBookList(@PathVariable int size) {
         List<Book> bookList = null;
@@ -63,7 +69,7 @@ public class ServiceController {
         return bookList;
     }
 
-    @RequestMapping(value="/delete/{id}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value="/deleteBook", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     Status deleteBook(@RequestBody BookDTO book){
         try {
@@ -71,18 +77,24 @@ public class ServiceController {
             return new Status(1,"book deleted");
         } catch (Exception e) {
             logger.error(e);
+            if(e instanceof ObjectNotFoundException){
+                return new Status(0, "given ID not found");
+            }
             return new Status(0,e.toString());
         }
     }
 
-    @RequestMapping(value="/update/{id}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value="/updateBook", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     Status updateBook(@RequestBody BookDTO book){
         try {
             bookService.updateBook(book);
-            return new Status(1,"book deleted");
+            return new Status(1,"book updated");
         } catch (Exception e) {
             logger.error(e);
+            if(e instanceof ObjectNotFoundException){
+                return new Status(0, "given ID not found");
+            }
             return new Status(0,e.toString());
         }
     }
@@ -96,6 +108,9 @@ public class ServiceController {
             return new Status(1,"user bought a book");
         } catch (Exception e) {
             logger.error(e);
+            if(e instanceof ObjectNotFoundException){
+                return new Status(0, "given ID not found");
+            }
             return new Status(0,e.toString());
         }
     }
@@ -103,7 +118,7 @@ public class ServiceController {
 
     // USER
 
-    @RequestMapping(value = "/register", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/registerUser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     Status register(@RequestBody UserDTO user){
         try {
@@ -111,11 +126,14 @@ public class ServiceController {
             return new Status(1,"user registered");
         } catch (Exception e) {
             logger.error(e);
+            if(e instanceof ObjectNotFoundException){
+                return new Status(0, "given ID not found");
+            }
             return new Status(0,e.toString());
         }
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/loginUser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     Status login(@RequestBody UserDTO user){
         try {
@@ -123,7 +141,34 @@ public class ServiceController {
             return new Status(1,"user logged in");
         } catch (Exception e) {
             logger.error(e);
+            if(e instanceof ObjectNotFoundException){
+                return new Status(0, "given ID not found");
+            }
             return new Status(0,e.toString());
         }
+    }
+
+    @RequestMapping(value="/listUsers", method = RequestMethod.GET)
+    public @ResponseBody
+    List<User> getUserList() {
+        List<User> userList = null;
+        try {
+            userList = userService.getUserList();
+        } catch (Exception e) {
+            logger.error(e);
+        }
+        return userList;
+    }
+
+    @RequestMapping(value="/listOrderedBooks/userId/{id}", method = RequestMethod.GET)
+    public @ResponseBody
+    List<SoldBooks> listOrderedBooks(@PathVariable("id") int id) {
+        List<SoldBooks> bookList = null;
+        try {
+            bookList = bookService.listOrderedBooks(id);
+        } catch (Exception e) {
+            logger.error(e);
+        }
+        return bookList;
     }
 }

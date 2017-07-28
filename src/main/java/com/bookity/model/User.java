@@ -1,6 +1,7 @@
 package com.bookity.model;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -23,20 +24,17 @@ public class User extends BaseEntity  implements Serializable {
     @Column(name="user_id")
     private long id;
 
-    @Column(name="userName", nullable = false, length = 20)
+    @Column(name="user_name", nullable = false, length = 20)
     private String userName;
 
-    @Column(name="userEmail", nullable = false, length = 20)
+    @Column(name="user_email", nullable = false, length = 20)
     private String userEmail;
 
-    @Column(name="userPassword", nullable = false, length = 255)
+    @Column(name="user_password", nullable = false, length = 255)
     private String userPassword;
 
-    @Column(name="lastRegistryDate")
+    @Column(name="last_registry_date")
     private Date lastRegistryDate;
-
-    @ElementCollection(targetClass=SoldBooks.class)
-    private Set<SoldBooks> soldBooks = new HashSet<SoldBooks>(0);
 
     public long getId() {
         return id;
@@ -76,15 +74,6 @@ public class User extends BaseEntity  implements Serializable {
 
     public void setLastRegistryDate(Date lastRegistryDate) {
         this.lastRegistryDate = lastRegistryDate;
-    }
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.User", cascade=CascadeType.ALL)
-    public Set<SoldBooks> getSoldBooks() {
-        return this.soldBooks;
-    }
-
-    public void setSoldBooks(Set<SoldBooks> soldBooks) {
-        this.soldBooks = soldBooks;
     }
 
 }

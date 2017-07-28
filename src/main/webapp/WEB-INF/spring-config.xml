@@ -26,7 +26,6 @@
                 <value>com.bookity.model.Book</value>
                 <value>com.bookity.model.User</value>
                 <value>com.bookity.model.SoldBooks</value>
-                <value>com.bookity.model.SoldBooksId</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -51,5 +50,5 @@
     <bean id="userDao" class="com.bookity.dao.UserDaoImpl"></bean>
     <bean id="userService" class="com.bookity.service.UserServiceImpl"></bean>
 
-    <bean id="paymentExt" class="com.bookity.external.PaymentServiceExternalImpl"></bean>
+    <bean id="paymentService" class="com.bookity.external.PaymentServiceExternalImpl"></bean>
 </beans>

@@ -1,6 +1,7 @@
 package com.bookity.model;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -24,10 +25,10 @@ public class Book extends BaseEntity implements Serializable {
     @Column(name="book_id")
     private long id;
 
-    @Column(name="bookName", nullable = false, length = 40)
+    @Column(name="book_name", nullable = false, length = 40)
     private String bookName;
 
-    @Column(name="bookWriter", nullable = false, length = 40)
+    @Column(name="book_writer", nullable = false, length = 40)
     private String bookWriter;
 
     @Column(name="ISBN", unique = true, nullable = false, length = 10)
@@ -38,9 +39,6 @@ public class Book extends BaseEntity implements Serializable {
 
     @Column(name="category", nullable = false)
     private long category;
-
-    @ElementCollection(targetClass=SoldBooks.class)
-    private Set<SoldBooks> soldBooks = new HashSet<SoldBooks>(0);
 
     public long getId() {
         return id;
@@ -90,12 +88,4 @@ public class Book extends BaseEntity implements Serializable {
         this.category = category;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.Book", cascade = CascadeType.ALL)
-    public Set<SoldBooks> getSoldBooks() {
-        return this.soldBooks;
-    }
-
-    public void setSoldBooks(Set<SoldBooks> soldBooks) {
-        this.soldBooks = soldBooks;
-    }
 }

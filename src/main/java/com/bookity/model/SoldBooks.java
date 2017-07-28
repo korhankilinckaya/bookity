@@ -1,56 +1,40 @@
 package com.bookity.model;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.hibernate.annotations.Proxy;
+
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "SOLD_BOOKS", catalog = "bookity")
-@AssociationOverrides({
-        @AssociationOverride(name = "pk.User",
-                joinColumns = @JoinColumn(name = "user_id")),
-        @AssociationOverride(name = "pk.Book",
-                joinColumns = @JoinColumn(name = "book_id")) })
-public class SoldBooks extends BaseEntity  implements java.io.Serializable {
+import static javax.persistence.GenerationType.IDENTITY;
 
-    private SoldBooksId pk = new SoldBooksId();
+@Entity
+@Table(name = "SOLD_BOOKS")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class SoldBooks extends BaseEntity implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    @Column(name="id")
+    private long id;
+
+    @Column(name="user_id")
+    private long userId;
+
+    @Column(name="book_id")
+    private long bookId;
 
     @Temporal(TemporalType.DATE)
-    @Column(name = "createdDate", nullable = false, length = 10)
+    @Column(name = "created_date", nullable = false, length = 10)
     private Date createdDate;
 
-    @Column(name = "numberOfBooks", nullable = false)
+    @Column(name = "number_of_books", nullable = false)
     private long numberOfBooks;
 
-    @Column(name = "paymentCompleted", nullable = true)
+    @Column(name = "payment_completed", nullable = true)
     private long paymentCompleted;
-
-    @EmbeddedId
-    public SoldBooksId getPk() {
-        return pk;
-    }
-
-    public void setPk(SoldBooksId pk) {
-        this.pk = pk;
-    }
-
-    @Transient
-    public User getUser() {
-        return pk.getUser();
-    }
-
-    public void setUser(User user) {
-        pk.setUser(user);
-    }
-
-    @Transient
-    public Book getBook() {
-        return pk.getBook();
-    }
-
-    public void setBook(Book book) {
-        pk.setBook(book);
-    }
 
     public Date getCreatedDate() {
         return this.createdDate;
@@ -76,4 +60,27 @@ public class SoldBooks extends BaseEntity  implements java.io.Serializable {
         this.paymentCompleted = paymentCompleted;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public long getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(long bookId) {
+        this.bookId = bookId;
+    }
 }

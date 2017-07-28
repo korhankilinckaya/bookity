@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 
 /**
@@ -28,6 +29,11 @@ public class UserServiceImpl implements UserService{
     @Override
     public boolean login(UserDTO user) throws Exception {
         return userDao.login(user);
+    }
+
+    @Override
+    public List<User> getUserList() throws Exception {
+        return userDao.getUserList();
     }
 
 }

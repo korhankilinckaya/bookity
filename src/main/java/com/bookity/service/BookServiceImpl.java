@@ -1,10 +1,14 @@
 package com.bookity.service;
 
+import com.bookity.Exceptions.OrderCannotBeHandledException;
+import com.bookity.Exceptions.PaymentCannotBeExecutedException;
 import com.bookity.dao.BookDao;
 import com.bookity.dto.BookDTO;
 import com.bookity.external.PaymentServiceExternal;
 import com.bookity.model.Book;
+import com.bookity.model.SoldBooks;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -53,7 +57,17 @@ public class BookServiceImpl implements BookService{
 
         if(isPaid){
             paymentCompleted = bookDao.completePayment(ids);
+        }else{
+            throw new OrderCannotBeHandledException();
+        }
+        if(!paymentCompleted){
+            throw new PaymentCannotBeExecutedException();
         }
         return paymentCompleted;
+    }
+
+    @Override
+    public List<SoldBooks> listOrderedBooks(long id) throws Exception {
+        return bookDao.listOrderedBooks(id);
     }
 }

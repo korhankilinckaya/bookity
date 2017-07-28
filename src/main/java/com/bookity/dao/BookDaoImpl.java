@@ -7,10 +7,7 @@ import com.bookity.model.SoldBooks;
 import com.bookity.model.User;
 import com.bookity.util.Util;
 import org.apache.log4j.Logger;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import org.hibernate.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Calendar;
@@ -29,7 +26,6 @@ public class BookDaoImpl implements BookDao {
     Transaction tx = null;
 
     static final Logger logger = Logger.getLogger(BookDaoImpl.class);
-
 
     @Override
     public boolean addBook(BookDTO book) throws Exception{
@@ -95,11 +91,9 @@ public class BookDaoImpl implements BookDao {
             throw new UserNotLoggedInException();
         }
 
-        Object bookEntity = session.load(Book.class, book.getId());
-
         tx = session.getTransaction();
         session.beginTransaction();
-        session.update(bookEntity);
+        session.update(Util.convertDTOtoEntity(book));
         tx.commit();
         return false;
     }
@@ -116,11 +110,8 @@ public class BookDaoImpl implements BookDao {
 
         SoldBooks soldBooks = new SoldBooks();
 
-        Book bookEntity = (Book) session.load(Book.class, book.getId());
-        User userEntity = (User) session.load(User.class, book.getUserId());
-
-        soldBooks.setBook(bookEntity);
-        soldBooks.setUser(userEntity);
+        soldBooks.setBookId(book.getId());
+        soldBooks.setUserId(book.getUserId());
         soldBooks.setCreatedDate(new Date());
         soldBooks.setNumberOfBooks(book.getStock());
 
@@ -142,11 +133,9 @@ public class BookDaoImpl implements BookDao {
         tx = session.beginTransaction();
 
         Query query= session.
-                createQuery("from SoldBooks s where s.pk.user.id=:userId and s.pk.book.id =:bookId");
+                createQuery("from SoldBooks s where s.userId=:userId and s.bookId =:bookId");
         query.setParameter("userId", id[0]);
         query.setParameter("bookId", id[1]);
-
-        logger.error("ids------------- user: "+id[0]+"  book: "+id[1]);
 
         SoldBooks soldBooks = (SoldBooks) query.list().get(0);
         soldBooks.setPaymentCompleted(1);
@@ -171,4 +160,23 @@ public class BookDaoImpl implements BookDao {
         }else
             return true;
     }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<SoldBooks> listOrderedBooks(long id) throws Exception{
+        session = sessionFactory.openSession();
+        tx = session.beginTransaction();
+
+        Query query= session.
+                createQuery("from SoldBooks s where s.userId=:userId");
+        query.setParameter("userId", id);
+
+        List<SoldBooks> soldBooks = (List<SoldBooks>) query.list();
+
+        tx.commit();
+        session.close();
+
+        return soldBooks;
+    }
+
 }
