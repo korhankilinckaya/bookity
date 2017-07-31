@@ -8,13 +8,18 @@ import com.bookity.external.PaymentServiceExternal;
 import com.bookity.model.Book;
 import com.bookity.model.SoldBooks;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
  * Created by korhan
  */
+
+@Service("bookService")
 public class BookServiceImpl implements BookService{
 
     @Autowired

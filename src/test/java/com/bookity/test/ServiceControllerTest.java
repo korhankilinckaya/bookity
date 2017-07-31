@@ -15,7 +15,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -31,19 +35,22 @@ import static org.junit.Assert.assertNull;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ServiceController.class, loader = AnnotationConfigContextLoader.class)
 public class ServiceControllerTest {
-    @Autowired
-    BookService bookService;
 
     @Autowired
+    @Qualifier("userService")
     UserService userService;
 
-    private BookDTO book;
-    private UserDTO user;
+    @Autowired
+    @Qualifier("bookService")
+    BookService bookService;
 
-    static final Logger logger = Logger.getLogger(ServiceController.class);
+    private static BookDTO book;
+    private static UserDTO user;
+
+    static final Logger logger = Logger.getLogger(ServiceControllerTest.class);
 
     @BeforeClass
-    public void initializeDTOs(){
+    public static void initializeDTOs(){
         book = new BookDTO();
         book.setBookName("korhan");
         book.setBookWriter("korhan");
@@ -59,16 +66,16 @@ public class ServiceControllerTest {
 
 
     @Test
-    public void register(UserDTO user){
+    public void register(){
         try {
-            userService.register(user);
+            //userService.register(user);
         } catch (Exception e){
             assertNull(e);
         }
     }
 
     @Test
-    public void login(UserDTO user){
+    public void login(){
         try {
             userService.login(user);
         } catch (Exception e){
@@ -89,7 +96,7 @@ public class ServiceControllerTest {
     //BOOK
 
     @Test
-     public void addBook(BookDTO book){
+    public void addBook(){
         try {
             for(int i=0;i<3;i++){
                 bookService.addBook(book);
@@ -109,7 +116,7 @@ public class ServiceControllerTest {
     }
 
     @Test
-    public void getBookList(int size) {
+    public void getBookList() {
         try {
             List<Book> bookList = bookService.getBookList(10);
             assertTrue(0<bookList.size());
@@ -119,7 +126,7 @@ public class ServiceControllerTest {
     }
 
     @Test
-    public void deleteBook(BookDTO book){
+    public void deleteBook(){
         try {
             book.setId(2);
             bookService.deleteBook(book);
@@ -131,7 +138,7 @@ public class ServiceControllerTest {
     }
 
     @Test
-    public void updateBook(BookDTO book){
+    public void updateBook(){
         try {
             book.setId(3);
             book.setBookWriter("korhanUpdated");
@@ -144,7 +151,7 @@ public class ServiceControllerTest {
     }
 
     @Test
-    public void buy(BookDTO book){
+    public void buy(){
         try {
             book.setUserId(1);
             book.setId(1);
@@ -167,7 +174,7 @@ public class ServiceControllerTest {
 
 
     @Test
-    public void listOrderedBooks(int id) {
+    public void listOrderedBooks() {
         try {
             List<SoldBooks> bookList = bookService.listOrderedBooks(1);
             assertTrue(0<bookList.size());
